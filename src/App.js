@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import shortid from 'shortid';
 import Form from './components/form';
 import GalleryComments from './components/apiGet';
+
 class App extends Component {
   state = {
     comments: [],
