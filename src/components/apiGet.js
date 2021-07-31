@@ -4,7 +4,7 @@ export default class ApiGetComments extends Component {
     comments: [],
     loading: false,
     error: null,
-    api: 'https://jordan.ashton.fashion/api/goods/30/comments',
+    api: 'https://jordan.ashton.fashion/api/goods/30/comments?page=43',
   };
   componentDidMount() {
     fetch(this.state.api)

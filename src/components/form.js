@@ -4,7 +4,6 @@ class Form extends Component {
   state = {
     name: '',
     text: '',
-    api: 'https://jordan.ashton.fashion/api/goods/30/comments',
   };
 
   hadleInputChange = e => {
@@ -16,10 +15,19 @@ class Form extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    // const self = this;
     this.props.onSubmit(this.state.name, this.state.text);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(this.state),
+    };
+    fetch('https://jordan.ashton.fashion/api/goods/30/comments', options)
+      .then(res => res.json())
+      .then(console.log);
+
     this.reset();
-    console.log(this.state);
   };
   reset = () => {
     this.setState({ name: '' });
