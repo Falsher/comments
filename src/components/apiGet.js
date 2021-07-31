@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from './button';
 export default class ApiGetComments extends Component {
   state = {
     comments: [],
@@ -6,20 +7,30 @@ export default class ApiGetComments extends Component {
     error: null,
     page: 1,
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.searchQuery !== this.props.searchQuery) {
+      this.setState({ comments: [], page: 1 });
+      this.componentDidMount();
+    } else if (prevState.page < this.state.page) {
+      this.componentDidMount();
+    }
+  }
+
   componentDidMount() {
     fetch(
       `https://jordan.ashton.fashion/api/goods/30/comments?page=${this.state.page}`,
     )
       .then(response => response.json())
       .then(comments =>
-        this.setState({
-          comments: [comments],
-        }),
+        this.setState(prevState => ({
+          comments: [...prevState.comments, comments],
+          needToScroll: true,
+        })),
       );
   }
   handleloadPageComments = () => {
-    console.log('hello');
-    this.setState({ page: this.state.page + 1 });
+    this.setState(({ page }) => ({ page: page + 1 }));
   };
   render() {
     const { loading, comments } = this.state;
@@ -39,10 +50,13 @@ export default class ApiGetComments extends Component {
                 );
               }),
             )}
-            <button type="button" onClick={this.handleloadPageComments}>
-              Показать еще
-            </button>
           </ul>
+          <Button
+            type="button"
+            label="Load more..."
+            width="140px"
+            whenClicked={this.handleloadPageComments}
+          />
         </div>
       </section>
     );
