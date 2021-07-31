@@ -4,10 +4,12 @@ export default class ApiGetComments extends Component {
     comments: [],
     loading: false,
     error: null,
-    api: 'https://jordan.ashton.fashion/api/goods/30/comments?page=43',
+    page: 1,
   };
   componentDidMount() {
-    fetch(this.state.api)
+    fetch(
+      `https://jordan.ashton.fashion/api/goods/30/comments?page=${this.state.page}`,
+    )
       .then(response => response.json())
       .then(comments =>
         this.setState({
@@ -15,7 +17,10 @@ export default class ApiGetComments extends Component {
         }),
       );
   }
-
+  handleloadPageComments = () => {
+    console.log('hello');
+    this.setState({ page: this.state.page + 1 });
+  };
   render() {
     const { loading, comments } = this.state;
     return (
@@ -34,6 +39,9 @@ export default class ApiGetComments extends Component {
                 );
               }),
             )}
+            <button type="button" onClick={this.handleloadPageComments}>
+              Показать еще
+            </button>
           </ul>
         </div>
       </section>
