@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from './button';
 import Pagination from 'react-js-pagination';
+import apiService from './apiService';
 export default class ApiGetComments extends Component {
   state = {
     comments: [],
@@ -8,6 +9,7 @@ export default class ApiGetComments extends Component {
     error: null,
     page: 1,
     activePage: 1,
+    pageNumber: 1,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -19,23 +21,19 @@ export default class ApiGetComments extends Component {
     }
   }
 
-  componentDidMount() {
-    fetch(
-      `https://jordan.ashton.fashion/api/goods/30/comments?page=${this.state.page}`,
-    )
-      .then(response => response.json())
-      .then(comments =>
-        this.setState(prevState => ({
-          comments: [...prevState.comments, comments],
-        })),
-      );
-  }
+  componentDidMount = () => {
+    apiService(this.state.page).then(comments =>
+      this.setState(prevState => ({
+        comments: [...prevState.comments, comments],
+      })),
+    );
+  };
   handleloadPageComments = () => {
     this.setState(({ page }) => ({ page: page + 1 }));
   };
-  handlePageChange(page) {
-    console.log(`active page is ${page}`);
-    this.setState({ activePage: page });
+  handlePageChange(pageNumber) {
+    this.setState({ activePage: pageNumber });
+    console.log(`active page is ${pageNumber}`);
   }
   render() {
     const { loading, comments } = this.state;
@@ -46,7 +44,7 @@ export default class ApiGetComments extends Component {
         <div>
           <ul className="ImageGallery">
             {comments.map(comment =>
-              comment.data.map(dat => {
+              comment.data.data.map(dat => {
                 return (
                   <li className="ImageGalleryItem" key={dat.id}>
                     <span> {dat.name}</span>
