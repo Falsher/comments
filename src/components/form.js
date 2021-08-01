@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import './css/form.css';
 class Form extends Component {
   state = {
     name: '',
@@ -50,7 +50,7 @@ class Form extends Component {
             onChange={this.hadleInputChange}
           />
         </label>
-        text
+        Text
         <textarea
           className="inputContact"
           value={this.state.text}

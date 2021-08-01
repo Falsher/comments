@@ -1,0 +1,27 @@
+.formFilling {
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  border: 4px inset rgb(0, 0, 0);
+}
+.buttonAdd {
+  width: 200px;
+  height: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  background: rgb(244, 10, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(244, 10, 255, 1) 0%,
+    rgba(0, 181, 255, 1) 100%
+  );
+  border: 0px;
+  border-radius: 10px;
+  color: aliceblue;
+  font-weight: 700;
+}
