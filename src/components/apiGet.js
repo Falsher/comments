@@ -11,12 +11,14 @@ export default class ApiGetComments extends Component {
     loading: false,
     error: null,
     activePage: 1,
+    totalPage: 0,
   };
 
   componentDidMount() {
     this.fecthComments().then(comments =>
       this.setState({
-        comments: [comments],
+        comments: comments.data.data,
+        totalPage: comments.data.last_page,
       }),
     );
   }
@@ -29,7 +31,7 @@ export default class ApiGetComments extends Component {
       () => {
         this.fecthComments().then(comments => {
           this.setState(prevState => ({
-            comments: [...prevState.comments, comments],
+            comments: [...prevState.comments, ...comments.data.data],
           }));
         });
       },
@@ -40,61 +42,57 @@ export default class ApiGetComments extends Component {
     this.setState({ activePage }, () => {
       this.fecthComments().then(comments => {
         this.setState({
-          comments: [comments],
+          comments: comments.data.data,
         });
       });
     });
   }
 
   render() {
-    const { loading, comments } = this.state;
+    const { loading, comments, totalPage } = this.state;
+    console.log(comments);
     return (
       <section className="sectionCommentGallery">
         <h1>Comments</h1>
         {loading && <div>loading...</div>}
         <div>
           <ul className="CommentGallery">
-            {comments.map(comment =>
-              comment.data.data.map(dat => {
-                return (
-                  <li className="CommentGalleryItem" key={dat.id}>
-                    <p>
-                      Name:
-                      <span> {dat.name}</span>
-                    </p>
-                    <p>
-                      Text:
-                      <span> {dat.text}</span>
-                    </p>
-                  </li>
-                );
-              }),
-            )}
-          </ul>
-          <div className="navigation">
             {comments.map(comment => {
               return (
-                <div>
-                  <Button
-                    className="buttonGallery"
-                    type="button"
-                    label="Load more..."
-                    width="140px"
-                    whenClicked={this.handleloadPageComments}
-                  />
-                  <div>
-                    <Pagination
-                      className="paginationGallery"
-                      activePage={this.state.activePage}
-                      itemsCountPerPage={10}
-                      totalItemsCount={comment.data.last_page * 10}
-                      pageRangeDisplayed={5}
-                      onChange={this.handlePageChange.bind(this)}
-                    />
-                  </div>
-                </div>
+                <li className="CommentGalleryItem" key={comment.id}>
+                  <p>
+                    Name:
+                    <span> {comment.name}</span>
+                  </p>
+                  <p>
+                    Text:
+                    <span> {comment.text}</span>
+                  </p>
+                </li>
               );
             })}
+          </ul>
+          <div className="navigation">
+            <div>
+              {totalPage !== this.state.activePage && (
+                <Button
+                  className="buttonGallery"
+                  type="button"
+                  label="Load more..."
+                  width="140px"
+                  whenClicked={this.handleloadPageComments}
+                />
+              )}
+
+              <Pagination
+                className="paginationGallery"
+                activePage={this.state.activePage}
+                itemsCountPerPage={1}
+                totalItemsCount={totalPage}
+                pageRangeDisplayed={5}
+                onChange={this.handlePageChange.bind(this)}
+              />
+            </div>
           </div>
         </div>
       </section>
