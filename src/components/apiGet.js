@@ -1,39 +1,52 @@
 import React, { Component } from 'react';
 import Button from './button';
-import Pagination from 'react-js-pagination';
+
 import apiService from './apiService';
+import Pagination from 'react-js-pagination';
+require('../../node_modules/bootstrap/dist/css/bootstrap.css');
 export default class ApiGetComments extends Component {
   state = {
     comments: [],
     loading: false,
     error: null,
-    page: 1,
+    clickButton: false,
     activePage: 1,
-    pageNumber: 1,
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.searchQuery !== this.props.searchQuery) {
-      this.setState({ comments: [], page: 1 });
+      this.setState({ comments: [], activePage: 1 });
       this.componentDidMount();
-    } else if (prevState.page < this.state.page) {
+    } else if (prevState.activePage < this.state.activePage) {
       this.componentDidMount();
     }
   }
 
   componentDidMount = () => {
-    apiService(this.state.page).then(comments =>
-      this.setState(prevState => ({
-        comments: [...prevState.comments, comments],
-      })),
-    );
+    if (this.state.clickButton === true) {
+      apiService(this.state.activePage).then(comments => {
+        return this.setState(prevState => ({
+          comments: [...prevState.comments, comments],
+        }));
+      });
+    } else {
+      return apiService(this.state.activePage).then(comments =>
+        this.setState({
+          comments: [comments],
+        }),
+      );
+    }
   };
   handleloadPageComments = () => {
-    this.setState(({ page }) => ({ page: page + 1 }));
+    this.setState(({ activePage }) => ({ activePage: activePage + 1 }));
+    this.setState({ clickButton: true });
+    console.log(this.state.clickButton);
   };
+
   handlePageChange(pageNumber) {
-    this.setState({ activePage: pageNumber });
-    console.log(`active page is ${pageNumber}`);
+    const activePage = pageNumber;
+    this.setState({ activePage });
+    console.log(this.state.activePage);
   }
   render() {
     const { loading, comments } = this.state;
