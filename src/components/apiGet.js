@@ -9,45 +9,42 @@ export default class ApiGetComments extends Component {
     comments: [],
     loading: false,
     error: null,
-    clickButton: false,
     activePage: 1,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.searchQuery !== this.props.searchQuery) {
-      this.setState({ comments: [], activePage: 1 });
-      this.componentDidMount();
-    } else if (prevState.activePage < this.state.activePage) {
-      this.componentDidMount();
-    }
+  componentDidMount() {
+    this.fecthComments().then(comments =>
+      this.setState({
+        comments: [comments],
+      }),
+    );
   }
 
-  componentDidMount = () => {
-    if (this.state.clickButton === true) {
-      apiService(this.state.activePage).then(comments => {
-        return this.setState(prevState => ({
-          comments: [...prevState.comments, comments],
-        }));
-      });
-    } else {
-      return apiService(this.state.activePage).then(comments =>
+  fecthComments = () => apiService(this.state.activePage);
+
+  handleloadPageComments = () => {
+    this.setState(
+      ({ activePage }) => ({ activePage: activePage + 1 }),
+      () => {
+        this.fecthComments().then(comments => {
+          this.setState(prevState => ({
+            comments: [...prevState.comments, comments],
+          }));
+        });
+      },
+    );
+  };
+
+  handlePageChange(activePage) {
+    this.setState({ activePage }, () => {
+      this.fecthComments().then(comments => {
         this.setState({
           comments: [comments],
-        }),
-      );
-    }
-  };
-  handleloadPageComments = () => {
-    this.setState(({ activePage }) => ({ activePage: activePage + 1 }));
-    this.setState({ clickButton: true });
-    console.log(this.state.clickButton);
-  };
-
-  handlePageChange(pageNumber) {
-    const activePage = pageNumber;
-    this.setState({ activePage });
-    console.log(this.state.activePage);
+        });
+      });
+    });
   }
+
   render() {
     const { loading, comments } = this.state;
     return (
